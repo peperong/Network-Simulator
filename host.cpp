@@ -20,7 +20,6 @@ void Host::send(Packet *packet) {
 
     if(address_ == packet->srcAddress()) {
         std::cout << "Host #" << id() << ": sending packet (from: " << from << ", to: " << to << ", " << dataLength << " bytes)" << std::endl;
-
         std::mt19937 rng(std::random_device{}());
         std::uniform_int_distribution<std::size_t> dist(0, linkTable().size() - 1);
         linkTable()[dist(rng)]->send(packet, this);
