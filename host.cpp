@@ -25,7 +25,8 @@ void Host::send(Packet *packet) {
         linkTable()[dist(rng)]->send(packet, this);
     } else if(address_ == packet->destAddress()) {
         Service* service = Host::getService(packet->destPort());
-        std::cout << "Host #" << id() << ": received packet, destination port: " << packet->destPort() << std::endl;
+        if(packet->destPort() != 0)
+            std::cout << "Host #" << id() << ": received packet, destination port: " << packet->destPort() << std::endl;
         if(service == nullptr) {
             std::cout << "Host #" << id() << ": no service for packet (from: " << from << ", to: " << to << ", " << dataLength << " bytes)" << std::endl;
             delete packet;
