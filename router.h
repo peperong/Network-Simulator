@@ -15,8 +15,10 @@ protected:
   std::vector<RoutingEntry> routingTable_;
 private:
   int Destination(Address dest);
+  virtual std::string name() override { return "Router"; }
+  void log(std::string message) { Node::log(message); }
 public:
-  void send(Packet *packet);
+  virtual void send(Packet *packet) override;
 };
 
 #endif

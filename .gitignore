@@ -1,4 +1,7 @@
 *.o
 *.exe
 first
+second
+third
+forth
 main
