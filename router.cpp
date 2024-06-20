@@ -1,28 +1,26 @@
 #include "router.h"
 #include <iostream>
-#include <string>
-#include <memory>
 
-int Router::Destination(Address dest){
-    for (std::size_t i = 0; i < routingTable_.size(); i++) {
-        if (routingTable_[i].destination == dest) {
-            return static_cast<int>(i);
+int Router::indexDestRoute(Address dest) {
+    for(size_t i = 0; i < routingTable_.size(); i++) {
+        if(routingTable_[i].destination == dest) {
+            return i;
         }
     }
     return -1;
 }
 
 void Router::send(Packet *packet) {
-    std::string from = packet->srcAddress().toString();
-    std::string to = packet->destAddress().toString();
-    std::string dataLength = std::to_string(packet->dataString().size());
+    std::string packetId = packet->toString();
 
-    int routingTableIndex = Destination(packet->destAddress());
-    if (routingTableIndex == -1) {
-        std::cout << "Router #" << id() << ": no route for packet (from: " << from << ", to: " << to << ", " << dataLength << " bytes)" << std::endl;
+    int routingTableIndex = Router::indexDestRoute(packet->destAddress());
+    if(routingTableIndex == -1) {
+        log("no route for packet: " + packetId);
+        delete packet;
         return;
     }
-
-    std::cout << "Router #" << id() << ": forwarding packet (from: " << from << ", to: " << to << ", " << dataLength << " bytes)" << std::endl;
-    routingTable_[routingTableIndex].nextLink->send(std::move(packet), this);
+    Link *nextLink = routingTable_[routingTableIndex].nextLink;
+    std::string linkId = nextLink->toString();
+    log("forwarding packet: " + packetId + " to " + linkId);
+    nextLink->receive(packet, this);
 }
